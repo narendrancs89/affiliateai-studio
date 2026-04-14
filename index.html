@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<title>AffiliateAI Studio</title>
+<meta name="description" content="AI-powered affiliate marketing content creator for Instagram, Facebook & YouTube"/>
+<meta name="theme-color" content="#0a0c12"/>
+<!-- iOS PWA -->
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="AffiliateAI"/>
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23f59e0b'/%3E%3Ctext y='.9em' font-size='80' x='10'%3E🎯%3C/text%3E%3C/svg%3E"/>
+<!-- PWA Manifest inline -->
+<link rel="manifest" href="manifest.json"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0a0c12;--s1:#111420;--s2:#171c2c;--s3:#1e2438;--bdr:rgba(255,255,255,0.08);--acc:#f59e0b;--acc2:#ef4444;--acc3:#3b82f6;--acc4:#8b5cf6;--txt:#e2e8f0;--muted:#5a6480;--ok:#10b981;--sff:'Syne',sans-serif;--bff:'Nunito',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;height:100%}
+body{background:var(--bg);color:var(--txt);font-family:var(--bff);height:100%;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+#root{min-height:100vh;display:flex;flex-direction:column}
+/* Scrollbar */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--s1)}
+::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
+/* Typography */
+.tt{font-family:var(--sff);font-weight:800;letter-spacing:-0.03em}
+/* Layout */
+.header{padding:env(safe-area-inset-top,0) 0 0;background:rgba(10,12,18,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:100}
+.hinner{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;gap:.75rem}
+.brand{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+.bicon{width:36px;height:36px;background:linear-gradient(135deg,var(--acc),#f97316);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 0 16px rgba(245,158,11,.25);flex-shrink:0}
+.bname{font-family:var(--sff);font-size:1rem;font-weight:800;background:linear-gradient(90deg,var(--acc),#fb923c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.bsub{font-size:.6rem;color:var(--muted);margin-top:-1px}
+.install-btn{padding:.45rem .9rem;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);border-radius:8px;color:var(--acc);font-family:var(--bff);font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.install-btn:hover{background:rgba(245,158,11,.2)}
+/* Step nav */
+.snav{display:flex;overflow-x:auto;gap:2px;padding:.4rem .75rem;scrollbar-width:none}
+.snav::-webkit-scrollbar{display:none}
+.sbtn{padding:.45rem .7rem;border-radius:8px;border:none;background:transparent;color:var(--muted);font-family:var(--bff);font-size:.7rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.sbtn.act{background:var(--s2);color:var(--acc);box-shadow:0 1px 6px rgba(0,0,0,.4)}
+.sbtn.done{color:var(--ok)}
+/* Main */
+.main{flex:1;padding:1.25rem 1rem;max-width:780px;margin:0 auto;width:100%;padding-bottom:calc(env(safe-area-inset-bottom,0) + 1.5rem)}
+/* Cards */
+.card{background:var(--s1);border:1px solid var(--bdr);border-radius:14px;padding:1.2rem;margin-bottom:.9rem;transition:border-color .2s}
+.card:hover{border-color:rgba(245,158,11,.15)}
+.ctitle{font-family:var(--sff);font-size:.82rem;font-weight:700;color:var(--txt);margin-bottom:.9rem;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+/* Badges */
+.bdg{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:6px;font-size:.65rem;font-weight:700;letter-spacing:.04em}
+.bdg-amz{background:rgba(245,158,11,.1);color:var(--acc);border:1px solid rgba(245,158,11,.2)}
+.bdg-flip{background:rgba(40,116,240,.1);color:#60a5fa;border:1px solid rgba(40,116,240,.2)}
+.bdg-jio{background:rgba(228,37,41,.1);color:#fca5a5;border:1px solid rgba(228,37,41,.2)}
+.bdg-meta{background:rgba(59,130,246,.1);color:var(--acc3);border:1px solid rgba(59,130,246,.2)}
+.bdg-yt{background:rgba(239,68,68,.1);color:var(--acc2);border:1px solid rgba(239,68,68,.2)}
+.bdg-myn{background:rgba(255,63,108,.1);color:#fda4af;border:1px solid rgba(255,63,108,.2)}
+.bdg-nyk{background:rgba(252,39,121,.1);color:#f9a8d4;border:1px solid rgba(252,39,121,.2)}
+/* Forms */
+.fr{display:grid;gap:.75rem;margin-bottom:.75rem}
+.fr.c2{grid-template-columns:1fr 1fr}
+.fr.c3{grid-template-columns:1fr 1fr 1fr}
+.fld{display:flex;flex-direction:column;gap:3px}
+label{font-size:.65rem;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase}
+input,textarea,select{background:var(--s2);border:1px solid var(--bdr);border-radius:9px;color:var(--txt);padding:.62rem .85rem;font-family:var(--bff);font-size:.86rem;outline:none;width:100%;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none}
+input:focus,textarea:focus,select:focus{border-color:rgba(245,158,11,.5);box-shadow:0 0 0 3px rgba(245,158,11,.07)}
+select option{background:#171c2c}
+textarea{resize:vertical;min-height:80px;line-height:1.6}
+.hint{font-size:.65rem;color:var(--muted);margin-top:2px;line-height:1.4}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:.68rem 1.3rem;border-radius:10px;border:none;font-family:var(--sff);font-size:.84rem;font-weight:700;cursor:pointer;transition:all .15s;text-decoration:none;-webkit-tap-highlight-color:transparent;letter-spacing:.01em}
+.btn-p{background:linear-gradient(135deg,var(--acc),#f97316);color:#000;box-shadow:0 4px 14px rgba(245,158,11,.2)}
+.btn-p:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,158,11,.3)}
+.btn-s{background:var(--s2);color:var(--txt);border:1px solid var(--bdr)}
+.btn-s:hover:not(:disabled){border-color:rgba(255,255,255,.15)}
+.btn-fb{background:#1877F2;color:#fff}
+.btn-yt{background:#ff0000;color:#fff}
+.btn-ig{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff}
+.btn-flip{background:#2874F0;color:#fff}
+.btn-w{width:100%}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
+/* Alerts */
+.al{padding:.7rem .9rem;border-radius:10px;font-size:.78rem;line-height:1.55;margin-bottom:.8rem}
+.al-w{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.18);color:#fcd34d}
+.al-i{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.18);color:#93c5fd}
+.al-ok{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);color:#6ee7b7}
+.al-err{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:#fca5a5}
+/* Progress */
+.pgw{width:100%;height:3px;background:var(--s2);border-radius:2px;overflow:hidden;margin:.8rem 0}
+.pgf{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:2px;transition:width .4s}
+@keyframes shim{0%,100%{opacity:1}50%{opacity:.4}}
+.shim{animation:shim 1.3s ease-in-out infinite}
+/* Content boxes */
+.slbl{font-size:.65rem;font-weight:700;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;margin:.9rem 0 .4rem;display:flex;align-items:center;gap:5px}
+.slbl:first-child{margin-top:0}
+.cbox{background:var(--s2);border:1px solid var(--bdr);border-radius:9px;padding:.85rem;font-size:.82rem;line-height:1.7;color:#c8d0df;white-space:pre-wrap;position:relative;margin-bottom:.65rem}
+.cpb{position:absolute;top:7px;right:7px;padding:3px 9px;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:6px;color:var(--muted);font-size:.65rem;font-family:var(--bff);cursor:pointer;transition:all .15s}
+.cpb:hover{color:var(--acc);border-color:rgba(245,158,11,.3)}
+.cpb.ok{color:var(--ok)}
+/* Platform tabs */
+.ptabs{display:flex;gap:3px;margin-bottom:1rem;padding:3px;background:var(--s2);border-radius:10px}
+.ptab{flex:1;padding:7px 4px;border:none;border-radius:8px;background:transparent;color:var(--muted);font-family:var(--bff);font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:3px;white-space:nowrap}
+.ptab.act{background:var(--s1);color:var(--txt);box-shadow:0 1px 5px rgba(0,0,0,.3)}
+/* Tags */
+.tcloud{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.tag{padding:2px 8px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.18);border-radius:20px;font-size:.7rem;color:#7dd3fc}
+/* Platform selector */
+.psel-grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+.psel-card{padding:.75rem .9rem;border-radius:10px;border:1px solid var(--bdr);background:var(--s2);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px}
+.psel-card:hover{border-color:rgba(245,158,11,.3)}
+.psel-card.sel{border-color:var(--acc);background:rgba(245,158,11,.07)}
+.psel-icon{font-size:1.2rem;flex-shrink:0}
+.psel-name{font-size:.78rem;font-weight:600;color:var(--txt)}
+.psel-sub{font-size:.62rem;color:var(--muted);margin-top:1px}
+.psel-check{margin-left:auto;width:18px;height:18px;border-radius:50%;border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:.6rem;transition:all .15s;flex-shrink:0}
+.psel-card.sel .psel-check{background:var(--acc);border-color:var(--acc);color:#000}
+/* Canvas/Video */
+.cvwrap{display:flex;justify-content:center;background:#000;border-radius:12px;overflow:hidden;border:1px solid var(--bdr);margin-bottom:.75rem}
+.vprev{width:100%;border-radius:10px;background:#000;display:block;margin-bottom:.75rem;max-height:400px}
+/* Publish rows */
+.pubrow{display:flex;align-items:flex-start;justify-content:space-between;padding:1rem 1.1rem;background:var(--s1);border:1px solid var(--bdr);border-radius:12px;margin-bottom:.65rem;gap:.9rem;transition:border-color .15s}
+.pubrow:hover{border-color:rgba(255,255,255,.12)}
+.pubinfo{display:flex;align-items:flex-start;gap:.75rem;flex:1;min-width:0}
+.pubic{font-size:1.35rem;flex-shrink:0;margin-top:1px}
+.pubname{font-family:var(--sff);font-size:.85rem;font-weight:700}
+.pubdesc{font-size:.69rem;color:var(--muted);margin-top:1px;line-height:1.4}
+.pubmsg{font-size:.7rem;margin-top:3px;line-height:1.4}
+.stag{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:20px;font-size:.68rem;font-weight:600;flex-shrink:0}
+.stag-ok{background:rgba(16,185,129,.1);color:var(--ok);border:1px solid rgba(16,185,129,.2)}
+.stag-err{background:rgba(239,68,68,.1);color:var(--acc2);border:1px solid rgba(239,68,68,.2)}
+/* Affiliate platform rows */
+.affrow{display:flex;align-items:center;gap:.75rem;padding:.9rem 1rem;background:var(--s2);border:1px solid var(--bdr);border-radius:10px;margin-bottom:.55rem;cursor:pointer;transition:all .15s}
+.affrow:hover{border-color:rgba(245,158,11,.25)}
+.affrow.asel{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.05)}
+.affrow-icon{font-size:1.4rem;flex-shrink:0}
+.affrow-info{flex:1;min-width:0}
+.affrow-name{font-size:.84rem;font-weight:700}
+.affrow-sub{font-size:.68rem;color:var(--muted);margin-top:1px}
+.affrow-chk{width:20px;height:20px;border-radius:50%;border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:.65rem;transition:all .15s;flex-shrink:0}
+.affrow.asel .affrow-chk{background:var(--acc);border-color:var(--acc);color:#000}
+/* Panel heading */
+.ptitle{font-family:var(--sff);font-size:1.3rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.2rem}
+.psub{font-size:.78rem;color:var(--muted);margin-bottom:1.4rem;line-height:1.5}
+/* Install modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;display:flex;align-items:flex-end;padding:0}
+.modal{background:var(--s1);border-radius:20px 20px 0 0;padding:1.75rem 1.5rem calc(1.75rem + env(safe-area-inset-bottom,0));width:100%;max-width:480px;margin:0 auto;border-top:1px solid var(--bdr)}
+.modal-title{font-family:var(--sff);font-size:1.1rem;font-weight:800;margin-bottom:.5rem}
+.modal-steps{list-style:none;margin:1rem 0}
+.modal-steps li{padding:.55rem 0;border-bottom:1px solid var(--bdr);font-size:.82rem;display:flex;align-items:flex-start;gap:.6rem;line-height:1.5}
+.modal-steps li:last-child{border-bottom:none}
+.mstep-n{min-width:22px;height:22px;background:var(--acc);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;color:#000;flex-shrink:0;margin-top:1px}
+/* Responsive */
+@media(max-width:520px){
+  .fr.c2,.fr.c3{grid-template-columns:1fr}
+  .psel-grid{grid-template-columns:1fr}
+  .ptabs .ptab{font-size:.64rem;padding:6px 3px}
+}
+@media(min-width:640px){
+  .psel-grid{grid-template-columns:1fr 1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback}=React;
+
+// ── Affiliate Platforms Config ─────────────────────────────────
+const AFF_PLATFORMS=[
+  {id:"amazon_in",name:"Amazon India",icon:"🛒",color:"#FF9900",country:"IN",
+   hint:"amazon.in Associates → SiteStripe bar on product page",linkPh:"https://amzn.in/d/xxxxx",
+   papiNote:"Requires PA API (amazon.in) — 3 qualifying sales needed"},
+  {id:"amazon_us",name:"Amazon US",icon:"🛒",color:"#FF9900",country:"US",
+   hint:"affiliate-program.amazon.com → Access Keys",linkPh:"https://amzn.to/xxxxx",
+   papiNote:"Requires PA API (amazon.com) — 3 qualifying sales needed"},
+  {id:"flipkart",name:"Flipkart",icon:"🛍️",color:"#2874F0",country:"IN",
+   hint:"affiliate.flipkart.com → Tracking ID",linkPh:"https://fktr.in/xxxxxx",
+   papiNote:"Flipkart Affiliate Portal → Product Feed API"},
+  {id:"jiomart",name:"JioMart",icon:"🏪",color:"#E42529",country:"IN",
+   hint:"partner.jiomart.com → Affiliate link from product page",linkPh:"https://www.jiomart.com/p/xxx",
+   papiNote:"Manual links only — copy from JioMart app/site"},
+  {id:"myntra",name:"Myntra",icon:"👗",color:"#FF3F6C",country:"IN",
+   hint:"myntra.com affiliate program via EarnKaro or CJ Affiliate",linkPh:"https://www.myntra.com/xxx",
+   papiNote:"Use EarnKaro or Admitad affiliate links"},
+  {id:"nykaa",name:"Nykaa",icon:"💄",color:"#FC2779",country:"IN",
+   hint:"nykaa.com/affiliate → Link generator on product page",linkPh:"https://nykaafashion.com/p/xxx",
+   papiNote:"Nykaa Affiliate Portal → Product link generator"},
+  {id:"meesho",name:"Meesho",icon:"🎀",color:"#9B2C96",country:"IN",
+   hint:"meesho.com → Share product link from the app",linkPh:"https://meesho.com/p/xxx",
+   papiNote:"Meesho Supplier/Affiliate portal"},
+  {id:"snapdeal",name:"Snapdeal",icon:"📦",color:"#E40000",country:"IN",
+   hint:"snapdeal.com affiliate via Commission Junction",linkPh:"https://www.snapdeal.com/product/xxx",
+   papiNote:"Snapdeal Affiliate via CJ Affiliate network"},
+  {id:"tatacliq",name:"Tata CLiQ",icon:"🏷️",color:"#3B2B91",country:"IN",
+   hint:"affiliate.tatacliq.com → Product deep link generator",linkPh:"https://www.tatacliq.com/xxx",
+   papiNote:"Tata CLiQ Affiliate Portal"},
+];
+
+const SOC_PLATFORMS=[
+  {id:"instagram",icon:"📸",label:"Instagram",color:"#E1306C"},
+  {id:"facebook",icon:"👥",label:"Facebook",color:"#1877F2"},
+  {id:"youtube",icon:"▶️",label:"YouTube",color:"#FF0000"},
+];
+
+const TONES=["Energetic & Exciting","Professional & Trustworthy","Funny & Casual","Luxury & Premium"];
+const CATS=["Electronics","Beauty & Health","Home & Kitchen","Fashion","Fitness","Kids & Toys","Food & Grocery","Books","Appliances","Jewellery","Sports","Other"];
+
+// ── Helpers ────────────────────────────────────────────────────
+async function callClaude(prompt){
+  const r=await fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
+      messages:[{role:"user",content:prompt}]})
+  });
+  const d=await r.json();
+  return d.content?.map(b=>b.text||"").join("")||"";
+}
+
+function CopyBtn({text,label}){
+  const [ok,setOk]=useState(false);
+  return(<button className={`cpb ${ok?"ok":""}`}onClick={()=>{navigator.clipboard?.writeText(text)||document.execCommand?.("copy");setOk(true);setTimeout(()=>setOk(false),2000)}}>{ok?"✓":label||"Copy"}</button>);
+}
+
+function drawFrame(ctx,W,H,slide,prog,data){
+  const{img,name,price,feats,hook,cta}=data;
+  const bgs=[["#0d1b2a","#1a3a5c"],["#1c0d2b","#3d1a6b"],["#0a1f0d","#1a4020"],["#1f0a0a","#4a1515"],["#0d0d1f","#1a1a4a"]];
+  const[c1,c2]=bgs[slide%5];
+  const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,c1);g.addColorStop(1,c2);
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.save();ctx.globalAlpha=.06;ctx.fillStyle="#f59e0b";
+  ctx.beginPath();ctx.moveTo(W*.3,0);ctx.lineTo(W,0);ctx.lineTo(W*.7,H);ctx.lineTo(0,H);ctx.fill();ctx.restore();
+  if(img&&img.complete&&img.naturalWidth>0){
+    const iw=W*.78,ih=iw*img.naturalHeight/img.naturalWidth;
+    const iy=H*.13;
+    ctx.save();ctx.shadowColor="rgba(0,0,0,.7)";ctx.shadowBlur=24;ctx.globalAlpha=.93;
+    ctx.drawImage(img,(W-iw)/2,iy,iw,Math.min(ih,H*.42));ctx.restore();
+  }
+  const an=Math.min(prog*3.5,1);const ty=H*.73+(1-an)*55;
+  ctx.save();ctx.globalAlpha=an;ctx.shadowColor="rgba(0,0,0,.9)";ctx.shadowBlur=16;
+  const texts=[hook||name,feats[0]||name,feats[1]||name,price?`Only ₹${price}`:name,cta||"Link in Bio!"];
+  let main=texts[slide]||name;
+  const fs=slide===3?Math.floor(W*.11):Math.floor(W*.065);
+  ctx.font=`bold ${fs}px Arial,sans-serif`;
+  ctx.fillStyle=slide===3?"#f59e0b":"#ffffff";ctx.textAlign="center";
+  const maxW=W*.82;const wds=main.split(" ");let line="",lns=[];
+  for(const w of wds){const t=line+(line?" ":"")+w;if(ctx.measureText(t).width>maxW&&line){lns.push(line);line=w;}else line=t;}
+  if(line)lns.push(line);
+  const lh=Math.floor(W*.08);
+  lns.forEach((l,i)=>ctx.fillText(l,W/2,ty+i*lh));
+  const af=ty+lns.length*lh+18;
+  ctx.font=`500 ${Math.floor(W*.036)}px Arial,sans-serif`;ctx.fillStyle="rgba(255,255,255,.45)";
+  if(slide===0)ctx.fillText(name.slice(0,40)+(name.length>40?"…":""),W/2,af);
+  if(slide===4){ctx.fillStyle="#f59e0b";ctx.fillText("🔗 Check link in bio/description",W/2,af);}
+  ctx.restore();
+  for(let i=0;i<5;i++){ctx.beginPath();ctx.arc(W/2-28+i*14,H-26,3.5,0,Math.PI*2);ctx.fillStyle=i===slide?"#f59e0b":"rgba(255,255,255,.18)";ctx.fill();}
+  ctx.font=`${Math.floor(W*.025)}px Arial,sans-serif`;ctx.fillStyle="rgba(255,255,255,.22)";ctx.textAlign="center";
+  ctx.fillText("#ad #affiliate #sponsored",W/2,H-9);
+}
+
+// ── INSTALL MODAL ─────────────────────────────────────────────
+function InstallModal({platform,onClose,deferredPrompt}){
+  const isAndroid=platform==="android";
+  const isIos=platform==="ios";
+  const handleInstall=async()=>{
+    if(deferredPrompt){await deferredPrompt.prompt();onClose();}
+  };
+  return(
+    <div className="modal-bg" onClick={onClose}>
+      <div className="modal" onClick={e=>e.stopPropagation()}>
+        <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:"0.5rem"}}>
+          <div className="bicon">🎯</div>
+          <div>
+            <div className="modal-title">Install AffiliateAI Studio</div>
+            <div style={{fontSize:".72rem",color:"var(--muted)"}}>Free • No app store needed</div>
+          </div>
+        </div>
+        {isAndroid&&deferredPrompt&&(
+          <><div className="al al-i" style={{marginTop:"1rem"}}>Chrome detected — one-tap install available!</div>
+          <button className="btn btn-p btn-w" onClick={handleInstall}>📲 Install App Now</button></>
+        )}
+        {isAndroid&&!deferredPrompt&&(
+          <ul className="modal-steps">
+            <li><div className="mstep-n">1</div><span>Open this page in <strong>Chrome</strong> on your Android device</span></li>
+            <li><div className="mstep-n">2</div><span>Tap the <strong>⋮ menu</strong> (top-right)</span></li>
+            <li><div className="mstep-n">3</div><span>Tap <strong>"Add to Home Screen"</strong> or <strong>"Install App"</strong></span></li>
+            <li><div className="mstep-n">4</div><span>Tap <strong>"Install"</strong> — it appears on your home screen like a native app!</span></li>
+          </ul>
+        )}
+        {isIos&&(
+          <ul className="modal-steps">
+            <li><div className="mstep-n">1</div><span>Open this page in <strong>Safari</strong> on your iPhone/iPad</span></li>
+            <li><div className="mstep-n">2</div><span>Tap the <strong>Share button</strong> <span style={{background:"var(--s2)",padding:"1px 5px",borderRadius:4}}>⬆️</span> at the bottom</span></li>
+            <li><div className="mstep-n">3</div><span>Scroll down and tap <strong>"Add to Home Screen"</strong></span></li>
+            <li><div className="mstep-n">4</div><span>Tap <strong>"Add"</strong> — the app icon appears on your home screen!</span></li>
+          </ul>
+        )}
+        <button className="btn btn-s btn-w" style={{marginTop:".75rem"}} onClick={onClose}>Close</button>
+      </div>
+    </div>
+  );
+}
+
+// ── STEP 1: SETUP ─────────────────────────────────────────────
+function SetupStep({creds,setCreds,selAff,setSelAff,onNext}){
+  const set=(g,k,v)=>setCreds(c=>({...c,[g]:{...c[g],[k]:v}}));
+  const toggleAff=id=>setSelAff(a=>a.includes(id)?a.filter(x=>x!==id):[...a,id]);
+  return(
+    <div>
+      <div className="ptitle">Connect Your Accounts</div>
+      <div className="psub">One-time setup — stored in your browser only. Add credentials now or skip and add later.</div>
+
+      <div className="card">
+        <div className="ctitle">Select Your Affiliate Platforms</div>
+        <div style={{display:"flex",flexDirection:"column",gap:0}}>
+          {AFF_PLATFORMS.map(p=>(
+            <div key={p.id} className={`affrow ${selAff.includes(p.id)?"asel":""}`} onClick={()=>toggleAff(p.id)}>
+              <div className="affrow-icon">{p.icon}</div>
+              <div className="affrow-info">
+                <div className="affrow-name">{p.name} {p.country==="IN"&&<span style={{fontSize:".6rem",color:"var(--muted)",fontWeight:400}}>🇮🇳 India</span>}</div>
+                <div className="affrow-sub">{p.hint}</div>
+              </div>
+              <div className="affrow-chk">{selAff.includes(p.id)&&"✓"}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {selAff.length>0&&(
+        <div className="card">
+          <div className="ctitle">Affiliate Credentials</div>
+          <div className="al al-w">⚠️ Amazon PA API requires 3 qualifying sales. Skip for now — you can enter manually on product page.</div>
+          {selAff.map(id=>{
+            const pl=AFF_PLATFORMS.find(p=>p.id===id);
+            return(
+              <div key={id} style={{marginBottom:"1.1rem",paddingBottom:"1.1rem",borderBottom:"1px solid var(--bdr)"}}>
+                <div style={{fontSize:".78rem",fontWeight:700,color:"var(--txt)",marginBottom:".6rem",display:"flex",alignItems:"center",gap:6}}>
+                  {pl.icon} {pl.name}
+                  {(id==="amazon_in"||id==="amazon_us")&&<span className="bdg bdg-amz">PA API</span>}
+                </div>
+                {(id==="amazon_in"||id==="amazon_us")&&(
+                  <div className="fr c2">
+                    <div className="fld"><label>Access Key</label><input type="password" placeholder="AKIAIOSFODNN7" value={creds.amazon?.[id]?.accessKey||""} onChange={e=>setCreds(c=>({...c,amazon:{...c.amazon,[id]:{...c.amazon?.[id],accessKey:e.target.value}}}))} /></div>
+                    <div className="fld"><label>Secret Key</label><input type="password" placeholder="wJalrXUtnFEM..." value={creds.amazon?.[id]?.secretKey||""} onChange={e=>setCreds(c=>({...c,amazon:{...c.amazon,[id]:{...c.amazon?.[id],secretKey:e.target.value}}}))} /></div>
+                  </div>
+                )}
+                {(id==="amazon_in"||id==="amazon_us")&&(
+                  <div className="fr"><div className="fld"><label>Partner Tag / Tracking ID</label><input placeholder="yourname-21 (India) or yourname-20 (US)" value={creds.amazon?.[id]?.tag||""} onChange={e=>setCreds(c=>({...c,amazon:{...c.amazon,[id]:{...c.amazon?.[id],tag:e.target.value}}}))} /></div></div>
+                )}
+                {id==="flipkart"&&(
+                  <div className="fr"><div className="fld"><label>Flipkart Tracking ID</label><input placeholder="yourname_123" value={creds.flipkart?.trackingId||""} onChange={e=>set("flipkart","trackingId",e.target.value)} /><div className="hint">affiliate.flipkart.com → My Account → Tracking ID</div></div></div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <div className="card">
+        <div className="ctitle"><span className="bdg bdg-meta">👥 META</span> Facebook + Instagram</div>
+        <div className="al al-i">Get token: <strong>business.facebook.com → Settings → Page Access Token</strong> → Generate long-lived token</div>
+        <div className="fr"><div className="fld"><label>Page Access Token</label><input type="password" placeholder="EAABsbCS4ZCW8BO..." value={creds.meta.pageToken} onChange={e=>set("meta","pageToken",e.target.value)} /></div></div>
+        <div className="fr c2">
+          <div className="fld"><label>Facebook Page ID</label><input placeholder="123456789012345" value={creds.meta.pageId} onChange={e=>set("meta","pageId",e.target.value)} /></div>
+          <div className="fld"><label>Instagram Account ID</label><input placeholder="17841400000000" value={creds.meta.igId} onChange={e=>set("meta","igId",e.target.value)} /></div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="ctitle"><span className="bdg bdg-yt">▶️ YOUTUBE</span> Data API</div>
+        <div className="al al-i"><strong>developers.google.com/oauthplayground</strong> → YouTube Data API v3 → Authorize → Exchange for token</div>
+        <div className="fr c2">
+          <div className="fld"><label>OAuth Access Token</label><input type="password" placeholder="ya29.a0AfH6SMC..." value={creds.youtube.accessToken} onChange={e=>set("youtube","accessToken",e.target.value)} /></div>
+          <div className="fld"><label>Channel ID</label><input placeholder="UCxxxxxxxxxxxxxx" value={creds.youtube.channelId} onChange={e=>set("youtube","channelId",e.target.value)} /></div>
+        </div>
+      </div>
+
+      <button className="btn btn-p btn-w" onClick={onNext}>Save & Continue →</button>
+    </div>
+  );
+}
+
+// ── STEP 2: PRODUCT ───────────────────────────────────────────
+function ProductStep({product,setProduct,selAff,onNext}){
+  const set=(k,v)=>setProduct(p=>({...p,[k]:v}));
+  const canGo=product.name.trim()&&product.imageUrl.trim();
+  const selPl=AFF_PLATFORMS.filter(p=>selAff.includes(p.id));
+  const isIndia=selPl.some(p=>p.country==="IN");
+  return(
+    <div>
+      <div className="ptitle">Product Details</div>
+      <div className="psub">Enter your product information. Right-click the Amazon/Flipkart product image → "Copy image address" for the image URL.</div>
+
+      <div className="card">
+        <div className="ctitle">Platform & ASIN/ID</div>
+        <div className="fr c2">
+          <div className="fld">
+            <label>Affiliate Platform</label>
+            <select value={product.platform||"amazon_in"} onChange={e=>set("platform",e.target.value)}>
+              {selPl.map(p=><option key={p.id} value={p.id}>{p.icon} {p.name}</option>)}
+              {selPl.length===0&&<option value="amazon_in">🛒 Amazon India</option>}
+            </select>
+          </div>
+          <div className="fld">
+            <label>Product ID / ASIN</label>
+            <input placeholder="B09XS7JWHH (Amazon) or 000-abc (Flipkart)" value={product.asin} onChange={e=>set("asin",e.target.value)} />
+            <div className="hint">Found in the product page URL</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="ctitle">📝 Product Info</div>
+        <div className="fr c2">
+          <div className="fld"><label>Product Name ★</label><input placeholder="Sony WH-1000XM5 Headphones" value={product.name} onChange={e=>set("name",e.target.value)} /></div>
+          <div className="fld"><label>Price ({isIndia?"₹":"$"})</label><input type="number" placeholder={isIndia?"24990":"279.99"} value={product.price} onChange={e=>set("price",e.target.value)} /></div>
+        </div>
+        <div className="fr c2">
+          <div className="fld">
+            <label>Category</label>
+            <select value={product.category} onChange={e=>set("category",e.target.value)}>
+              {CATS.map(c=><option key={c}>{c}</option>)}
+            </select>
+          </div>
+          <div className="fld">
+            <label>Marketing Tone</label>
+            <select value={product.tone} onChange={e=>set("tone",e.target.value)}>
+              {TONES.map(t=><option key={t}>{t}</option>)}
+            </select>
+          </div>
+        </div>
+        <div className="fr"><div className="fld"><label>Your Affiliate Link</label><input placeholder={AFF_PLATFORMS.find(p=>p.id===(product.platform||"amazon_in"))?.linkPh||"https://..."} value={product.affiliateLink} onChange={e=>set("affiliateLink",e.target.value)} /></div></div>
+        <div className="fr">
+          <div className="fld">
+            <label>Product Image URL ★</label>
+            <input placeholder="https://m.media-amazon.com/images/I/71abc.jpg" value={product.imageUrl} onChange={e=>set("imageUrl",e.target.value)} />
+            <div className="hint">On product page: right-click main image → "Copy image address"</div>
+            {product.imageUrl&&<img src={product.imageUrl} crossOrigin="anonymous" alt="preview" style={{width:64,height:64,objectFit:"contain",marginTop:8,borderRadius:8,background:"#fff",padding:4,border:"1px solid var(--bdr)"}} onError={e=>e.target.style.display="none"} />}
+          </div>
+        </div>
+        <div className="fr"><div className="fld"><label>Product Description</label><textarea placeholder="Paste the product description here..." value={product.description} onChange={e=>set("description",e.target.value)} /></div></div>
+        <div className="fr">
+          <div className="fld">
+            <label>Key Features (one per line)</label>
+            <textarea style={{minHeight:100}} placeholder={"30-hour battery\nNoise cancellation\nFoldable design\nBluetooth 5.2\nTouch controls"} value={product.features} onChange={e=>set("features",e.target.value)} />
+          </div>
+        </div>
+      </div>
+
+      <button className="btn btn-p btn-w" disabled={!canGo} onClick={onNext}>
+        {canGo?"Generate AI Content →":"Enter product name + image URL to continue"}
+      </button>
+    </div>
+  );
+}
+
+// ── STEP 3: GENERATE ──────────────────────────────────────────
+function GenerateStep({product,selAff,content,setContent,onNext}){
+  const [loading,setLoading]=useState(false);
+  const [error,setError]=useState("");
+  const [tab,setTab]=useState("instagram");
+  const isIndia=AFF_PLATFORMS.find(p=>p.id===product.platform)?.country==="IN";
+  const curr=isIndia?"₹":"$";
+  const pl=AFF_PLATFORMS.find(p=>p.id===(product.platform||"amazon_in"))?.name||"Amazon";
+
+  const generate=async()=>{
+    setLoading(true);setError("");setContent(null);
+    const feats=product.features.split("\n").filter(Boolean).slice(0,5);
+    const prompt=`You are an expert affiliate marketing content creator for ${pl} in ${isIndia?"India":"the US"}. Create viral, conversion-focused short-form video content.
+
+PRODUCT: ${product.name}
+Platform: ${pl}
+Price: ${product.price?curr+product.price:"Not specified"}
+Category: ${product.category}
+Description: ${product.description||"Not provided"}
+Features: ${feats.join("; ")||"Not provided"}
+Affiliate Link: ${product.affiliateLink||"[AFFILIATE_LINK]"}
+Tone: ${product.tone}
+${isIndia?"Target Audience: Indian consumers, use relatable Indian references where appropriate":""}
+
+Create optimized content for Instagram Reels, Facebook Reels, and YouTube Shorts.
+
+Respond ONLY with valid JSON, no markdown, no backticks:
+{
+  "instagram":{
+    "hook":"Scroll-stopping first line, max 12 words, creates curiosity",
+    "script":"Full 30-sec script with [VISUAL: description] cues on separate lines",
+    "voiceover":"Clean spoken narration ~70 words, no stage directions, natural and engaging",
+    "caption":"Instagram caption with hook opener, 3 key benefits, social proof, CTA to check bio link, ${isIndia?"mention EMI/offers if applicable":""}. Use emojis. Max 1800 chars. Include #ad #affiliate.",
+    "hashtags":"25 hashtags mixing niche, category, trending. ${isIndia?"Include Indian hashtags like #MadeForIndia #IndianShopper":""} Start each with #.",
+    "cta":"End-screen call to action, max 6 words"
+  },
+  "facebook":{
+    "hook":"Facebook-style hook, slightly longer, 18 words max",
+    "script":"30-sec Facebook Reels script, slightly more story-driven",
+    "voiceover":"~70 words, warm tone, mention checking the link in post",
+    "caption":"Facebook caption: tell a story, highlight value/savings, strong CTA. Max 2000 chars. Include #ad.",
+    "hashtags":"12 relevant hashtags for Facebook",
+    "cta":"End-screen call to action, max 6 words"
+  },
+  "youtube":{
+    "hook":"YouTube Shorts hook — bold claim or question to grab attention",
+    "script":"30-sec script with [VISUAL] and [TEXT OVERLAY] cues, optimized for Shorts",
+    "voiceover":"~70 words, enthusiastic, mention description link",
+    "title":"YouTube title under 70 chars — main keyword + benefit or curiosity gap",
+    "caption":"YouTube description: 2-3 sentences, affiliate link placeholder, disclosure, #Shorts",
+    "hashtags":"#Shorts plus 4 niche hashtags",
+    "cta":"End-screen CTA, max 6 words"
+  }
+}`;
+    try{
+      const text=await callClaude(prompt);
+      const clean=text.replace(/```json|```/g,"").trim();
+      setContent(JSON.parse(clean));
+    }catch(e){setError("Generation failed. Please try again.");}
+    finally{setLoading(false);}
+  };
+
+  const c=content?.[tab];
+  return(
+    <div>
+      <div className="ptitle">AI Content Generation</div>
+      <div className="psub">One tap generates scripts, voiceovers, captions & hashtags for all 3 platforms.</div>
+
+      {!content&&(
+        <div className="card" style={{textAlign:"center",padding:"2.2rem 1.2rem"}}>
+          <div style={{fontSize:"2.5rem",marginBottom:".9rem"}}>✨</div>
+          <div style={{fontFamily:"var(--sff)",fontSize:"1rem",fontWeight:800,marginBottom:".35rem"}}>Generate content for</div>
+          <div style={{color:"var(--acc)",fontWeight:700,marginBottom:"1.3rem",fontSize:".9rem"}}>{product.name}</div>
+          <button className="btn btn-p" onClick={generate} disabled={loading} style={{minWidth:210}}>
+            {loading?"⏳ Generating…":"🚀 Generate All Content"}
+          </button>
+          {loading&&(<div style={{marginTop:"1.3rem"}}>
+            <div className="pgw" style={{margin:0}}><div className="pgf shim" style={{width:"100%"}}/></div>
+            <div style={{fontSize:".72rem",color:"var(--muted)",marginTop:".4rem"}}>Writing scripts, captions & hashtags for Instagram, Facebook and YouTube…</div>
+          </div>)}
+          {error&&<div className="al al-err" style={{marginTop:"1rem",textAlign:"left"}}>{error}</div>}
+        </div>
+      )}
+
+      {content&&(<>
+        <div className="ptabs">
+          {SOC_PLATFORMS.map(p=><button key={p.id} className={`ptab ${tab===p.id?"act":""}`} onClick={()=>setTab(p.id)}>{p.icon} {p.label}</button>)}
+        </div>
+        {c&&(<div className="card">
+          {tab==="youtube"&&c.title&&(<><div className="slbl">🏷️ Title</div><div className="cbox">{c.title}<CopyBtn text={c.title}/></div></>)}
+          <div className="slbl">⚡ Hook</div><div className="cbox">{c.hook}<CopyBtn text={c.hook}/></div>
+          <div className="slbl">📜 Video Script</div><div className="cbox" style={{minHeight:100}}>{c.script}<CopyBtn text={c.script}/></div>
+          <div className="slbl">🎙️ Voiceover</div><div className="cbox">{c.voiceover}<CopyBtn text={c.voiceover}/></div>
+          <div className="slbl">✍️ Caption</div><div className="cbox">{c.caption}<CopyBtn text={c.caption}/></div>
+          <div className="slbl">🔖 Hashtags</div>
+          <div className="cbox" style={{paddingBottom:"1rem"}}>
+            <CopyBtn text={c.hashtags}/>
+            <div className="tcloud">{c.hashtags.split(/\s+/).filter(h=>h.startsWith("#")).map((h,i)=><span key={i} className="tag">{h}</span>)}</div>
+          </div>
+        </div>)}
+        <div style={{display:"flex",gap:".65rem",flexWrap:"wrap"}}>
+          <button className="btn btn-s" onClick={()=>{setContent(null);generate();}}>🔄 Regenerate</button>
+          <button className="btn btn-p" style={{flex:1}} onClick={onNext}>Create Video →</button>
+        </div>
+      </>)}
+    </div>
+  );
+}
+
+// ── STEP 4: VIDEO ─────────────────────────────────────────────
+function VideoStep({product,content,videoUrl,setVideoBlob,setVideoUrl,onNext}){
+  const canvasRef=useRef(null);const animRef=useRef(null);const imgRef=useRef(null);
+  const [recording,setRecording]=useState(false);const [progress,setProgress]=useState(0);const [done,setDone]=useState(!!videoUrl);
+  const DURATION=30;
+  const feats=product.features.split("\n").filter(Boolean);
+  const isIndia=AFF_PLATFORMS.find(p=>p.id===product.platform)?.country==="IN";
+
+  useEffect(()=>{
+    if(!product.imageUrl)return;
+    const img=new Image();img.crossOrigin="anonymous";
+    img.onload=()=>{imgRef.current=img;};
+    img.src=product.imageUrl;
+  },[product.imageUrl]);
+
+  useEffect(()=>{
+    const canvas=canvasRef.current;if(!canvas)return;
+    const ctx=canvas.getContext("2d");let start=null;
+    const loop=(ts)=>{
+      if(!start)start=ts;const elapsed=(ts-start)/1000;
+      const slide=Math.min(Math.floor(elapsed/6),4);const prog=(elapsed%6)/6;
+      drawFrame(ctx,canvas.width,canvas.height,slide,prog,{
+        img:imgRef.current,name:product.name,price:product.price,
+        feats,hook:content?.instagram?.hook||product.name,
+        cta:content?.instagram?.cta||"Link in Bio!"
+      });
+      animRef.current=requestAnimationFrame(loop);
+    };
+    animRef.current=requestAnimationFrame(loop);
+    return()=>{if(animRef.current)cancelAnimationFrame(animRef.current);};
+  },[product,content]);
+
+  const record=()=>{
+    const canvas=canvasRef.current;if(!canvas)return;
+    const chunks=[];setProgress(0);setDone(false);setVideoBlob(null);setVideoUrl(null);
+    let mimeType="video/webm;codecs=vp9";
+    if(!MediaRecorder.isTypeSupported(mimeType))mimeType="video/webm";
+    const stream=canvas.captureStream(30);
+    const recorder=new MediaRecorder(stream,{mimeType,videoBitsPerSecond:2800000});
+    recorder.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
+    recorder.onstop=()=>{
+      const blob=new Blob(chunks,{type:mimeType});
+      setVideoBlob(blob);setVideoUrl(URL.createObjectURL(blob));setRecording(false);setDone(true);
+    };
+    recorder.start(200);setRecording(true);
+    let elapsed=0;
+    const iv=setInterval(()=>{elapsed+=0.5;setProgress(elapsed/DURATION);if(elapsed>=DURATION){clearInterval(iv);recorder.stop();}},500);
+  };
+
+  return(
+    <div>
+      <div className="ptitle">Video Creator</div>
+      <div className="psub">Live preview of your reel using {isIndia?"":"Amazon's "}official product images. Tap Record to capture 30 seconds.</div>
+      <div className="card" style={{padding:"1rem"}}>
+        <div className="cvwrap" style={{height:360}}>
+          <canvas ref={canvasRef} width={203} height={360}/>
+        </div>
+        {recording&&(<div style={{marginTop:".5rem"}}>
+          <div className="pgw" style={{margin:0}}><div className="pgf" style={{width:`${progress*100}%`}}/></div>
+          <div style={{textAlign:"center",fontSize:".73rem",color:"var(--muted)",marginTop:".35rem"}}>🔴 Recording {Math.round(progress*DURATION)}s / {DURATION}s</div>
+        </div>)}
+        {!recording&&!done&&(<>
+          <div className="al al-i" style={{marginTop:".75rem"}}>Preview above shows your reel. When ready, tap Record.</div>
+          <button className="btn btn-p btn-w" onClick={record}>🔴 Start Recording (30 sec)</button>
+        </>)}
+        {done&&videoUrl&&(<>
+          <div className="al al-ok">✅ Video ready! Preview below then publish.</div>
+          <video src={videoUrl} controls className="vprev"/>
+          <div style={{display:"flex",gap:".65rem"}}>
+            <a href={videoUrl} download="affiliate-reel.webm" className="btn btn-s" style={{flex:1,textDecoration:"none",justifyContent:"center"}}>⬇️ Download</a>
+            <button className="btn btn-s" onClick={record}>🔄 Re-record</button>
+          </div>
+        </>)}
+      </div>
+      {done&&<button className="btn btn-p btn-w" style={{marginTop:".5rem"}} onClick={onNext}>Publish to All Platforms →</button>}
+    </div>
+  );
+}
+
+// ── STEP 5: PUBLISH ───────────────────────────────────────────
+function PublishStep({content,videoBlob,videoUrl,creds,product}){
+  const [status,setStatus]=useState({facebook:"idle",youtube:"idle"});
+  const [msgs,setMsgs]=useState({});
+  const [igCopied,setIgCopied]=useState(false);
+  const isIndia=AFF_PLATFORMS.find(p=>p.id===product.platform)?.country==="IN";
+  const setS=(p,s,m)=>{setStatus(x=>({...x,[p]:s}));if(m!==undefined)setMsgs(x=>({...x,[p]:m}));};
+
+  const postFacebook=async()=>{
+    if(!creds.meta.pageToken||!creds.meta.pageId){setS("facebook","error","Page Access Token and Page ID required — go to Setup.");return;}
+    if(!videoBlob){setS("facebook","error","No video — go to Video step first.");return;}
+    setS("facebook","loading","Uploading to Facebook Reels…");
+    try{
+      const form=new FormData();form.append("source",videoBlob,"reel.webm");
+      form.append("description",(content?.facebook?.caption||"")+"\n\n"+(content?.facebook?.hashtags||""));
+      form.append("access_token",creds.meta.pageToken);
+      const res=await fetch(`https://graph-video.facebook.com/v19.0/${creds.meta.pageId}/videos`,{method:"POST",body:form});
+      const data=await res.json();
+      if(data.id)setS("facebook","success",`✅ Posted! Video ID: ${data.id}`);
+      else setS("facebook","error",data.error?.message||"Upload failed — check token validity.");
+    }catch(e){setS("facebook","error","Network error. Check credentials.");}
+  };
+
+  const postYouTube=async()=>{
+    if(!creds.youtube.accessToken){setS("youtube","error","YouTube token required — go to Setup.");return;}
+    if(!videoBlob){setS("youtube","error","No video — go to Video step first.");return;}
+    setS("youtube","loading","Initiating YouTube upload…");
+    try{
+      const meta={snippet:{title:content?.youtube?.title||product.name,description:(content?.youtube?.caption||"")+"\n\nAffiliate link: "+(product.affiliateLink||"[YOUR LINK]")+"\n\n#Shorts #affiliate #ad"+(isIndia?" #india":"")+"\nDisclosure: This video contains affiliate links. I may earn a commission.",tags:(content?.youtube?.hashtags||"#Shorts").split(/\s+/).filter(h=>h.startsWith("#")).map(h=>h.slice(1)),categoryId:"26"},status:{privacyStatus:"public",selfDeclaredMadeForKids:false}};
+      const init=await fetch("https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",{method:"POST",headers:{"Authorization":`Bearer ${creds.youtube.accessToken}`,"Content-Type":"application/json","X-Upload-Content-Type":"video/webm","X-Upload-Content-Length":String(videoBlob.size)},body:JSON.stringify(meta)});
+      const uri=init.headers.get("Location");
+      if(!uri)throw new Error("No upload URI — token may be expired. Refresh at OAuth Playground.");
+      setS("youtube","loading","Uploading video…");
+      const up=await fetch(uri,{method:"PUT",headers:{"Content-Type":"video/webm"},body:videoBlob});
+      const data=await up.json();
+      if(data.id)setS("youtube","success",`✅ Live at youtube.com/shorts/${data.id}`);
+      else setS("youtube","error",data.error?.message||"Upload failed.");
+    }catch(e){setS("youtube","error",e.message||"Upload failed.");}
+  };
+
+  const igText=(content?.instagram?.caption||"")+"\n\n"+(content?.instagram?.hashtags||"");
+  const platName=AFF_PLATFORMS.find(p=>p.id===product.platform)?.name||"Amazon";
+
+  return(
+    <div>
+      <div className="ptitle">Publish</div>
+      <div className="psub">Post directly to Facebook & YouTube. Download for Instagram. All content is ready.</div>
+
+      {!videoBlob&&<div className="al al-w">⚠️ No video yet — go back to Video step and record first.</div>}
+
+      <div className="pubrow">
+        <div className="pubinfo">
+          <div className="pubic">👥</div>
+          <div>
+            <div className="pubname">Facebook Reels</div>
+            <div className="pubdesc">Posts directly to your Page via Meta Graph API</div>
+            {msgs.facebook&&<div className="pubmsg" style={{color:status.facebook==="success"?"var(--ok)":"var(--acc2)"}}>{msgs.facebook}</div>}
+          </div>
+        </div>
+        {status.facebook==="success"?<span className="stag stag-ok">✅ Posted</span>:
+        <button className="btn btn-fb" disabled={status.facebook==="loading"||!videoBlob} onClick={postFacebook} style={{flexShrink:0,fontSize:".78rem",padding:".55rem .9rem"}}>
+          {status.facebook==="loading"?"Uploading…":"Post Reel"}</button>}
+      </div>
+
+      <div className="pubrow" style={{flexDirection:"column",alignItems:"stretch"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:".7rem"}}>
+          <div className="pubinfo">
+            <div className="pubic">📸</div>
+            <div><div className="pubname">Instagram Reels</div><div className="pubdesc">Download → open Instagram → tap + → Reel</div></div>
+          </div>
+          {videoUrl&&<a href={videoUrl} download="instagram-reel.webm" className="btn btn-ig" style={{textDecoration:"none",fontSize:".75rem",padding:".5rem .85rem",flexShrink:0}}>⬇️ Download</a>}
+        </div>
+        <div className="al al-i" style={{fontSize:".73rem",marginBottom:".55rem"}}>Instagram requires a server for direct video upload. Download above → post on your phone. Caption is pre-written below — just copy & paste!</div>
+        <div style={{position:"relative"}}>
+          <div className="cbox" style={{fontSize:".75rem",maxHeight:110,overflow:"auto",paddingRight:"4rem"}}>{igText}</div>
+          <button className={`cpb ${igCopied?"ok":""}`} onClick={()=>{navigator.clipboard?.writeText(igText);setIgCopied(true);setTimeout(()=>setIgCopied(false),2000);}} style={{position:"absolute",top:7,right:7}}>{igCopied?"✓ Copied":"Copy Caption"}</button>
+        </div>
+      </div>
+
+      <div className="pubrow">
+        <div className="pubinfo">
+          <div className="pubic">▶️</div>
+          <div>
+            <div className="pubname">YouTube Shorts</div>
+            <div className="pubdesc">Uploads directly to your channel via YouTube Data API</div>
+            {msgs.youtube&&<div className="pubmsg" style={{color:status.youtube==="success"?"var(--ok)":"var(--acc2)"}}>{msgs.youtube}</div>}
+          </div>
+        </div>
+        {status.youtube==="success"?<span className="stag stag-ok">✅ Uploaded</span>:
+        <button className="btn btn-yt" disabled={status.youtube==="loading"||!videoBlob} onClick={postYouTube} style={{flexShrink:0,fontSize:".78rem",padding:".55rem .9rem"}}>
+          {status.youtube==="loading"?"Uploading…":"Upload Short"}</button>}
+      </div>
+
+      <div className="card" style={{marginTop:".5rem"}}>
+        <div className="ctitle">📋 Platform-Specific Affiliate Links</div>
+        <div style={{fontSize:".78rem",color:"var(--muted)",marginBottom:".75rem"}}>Share these links across all platforms to maximize commissions</div>
+        {[{label:"Instagram Bio",icon:"📸",note:"Settings → Edit Profile → Website"},{label:"Facebook Post",icon:"👥",note:"Paste in the post description"},{label:"YouTube Description",icon:"▶️",note:"Add under the video description"},{label:"WhatsApp Status",icon:"💬",note:"Share as text status with link"}].map(r=>(
+          <div key={r.label} style={{display:"flex",alignItems:"center",gap:".6rem",padding:".6rem .8rem",background:"var(--s2)",borderRadius:8,marginBottom:".45rem"}}>
+            <span style={{fontSize:"1rem"}}>{r.icon}</span>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontSize:".78rem",fontWeight:700}}>{r.label}</div>
+              <div style={{fontSize:".66rem",color:"var(--muted)"}}>{r.note}</div>
+            </div>
+            <CopyBtn text={product.affiliateLink||"[YOUR AFFILIATE LINK]"} label="Copy Link"/>
+          </div>
+        ))}
+      </div>
+
+      <div className="al al-w">⚠️ <strong>Legal Disclosure Required:</strong> Always include #ad #affiliate and disclose in bio/description that you earn a commission when people buy through your links. Your AI-generated captions already include this.</div>
+      <div className="al al-ok">🎉 <strong>Done!</strong> Go back to Product to create ads for another {platName} product.</div>
+    </div>
+  );
+}
+
+// ── MAIN APP ──────────────────────────────────────────────────
+function App(){
+  const [step,setStep]=useState(0);
+  const [done,setDone]=useState(Array(5).fill(false));
+  const [installModal,setInstallModal]=useState(null);
+  const [deferredPrompt,setDeferredPrompt]=useState(null);
+  const [creds,setCreds]=useState({amazon:{},meta:{pageToken:"",pageId:"",igId:""},youtube:{accessToken:"",channelId:""},flipkart:{}});
+  const [selAff,setSelAff]=useState(["amazon_in"]);
+  const [product,setProduct]=useState({asin:"",name:"",price:"",category:"Electronics",imageUrl:"",description:"",features:"",tone:"Energetic & Exciting",affiliateLink:"",platform:"amazon_in"});
+  const [content,setContent]=useState(null);
+  const [videoBlob,setVideoBlob]=useState(null);
+  const [videoUrl,setVideoUrl]=useState(null);
+
+  useEffect(()=>{
+    window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();setDeferredPrompt(e);});
+    // Detect platform for install hint
+    const ua=navigator.userAgent;
+    if(/android/i.test(ua)){}
+    if(/iphone|ipad|ipod/i.test(ua)){}
+  },[]);
+
+  const goNext=i=>{setDone(d=>{const n=[...d];n[i]=true;return n;});setStep(i+1);};
+  const STEPS=["🔑 Setup","📦 Product","✨ Generate","🎬 Video","🚀 Publish"];
+  const ua=navigator.userAgent;
+  const isIOS=/iphone|ipad|ipod/i.test(ua);
+  const isAndroid=/android/i.test(ua);
+
+  return(<>
+    <div style={{minHeight:"100vh",display:"flex",flexDirection:"column"}}>
+      <div className="header">
+        <div className="hinner">
+          <a className="brand" href="#">
+            <div className="bicon">🎯</div>
+            <div><div className="bname">AffiliateAI Studio</div><div className="bsub">Amazon • Flipkart • JioMart & more</div></div>
+          </a>
+          <button className="install-btn" onClick={()=>setInstallModal(isIOS?"ios":isAndroid?"android":"android")}>
+            📲 Install App
+          </button>
+        </div>
+        <div className="snav">
+          {STEPS.map((s,i)=><button key={i} className={`sbtn ${step===i?"act":""} ${done[i]?"done":""}`} onClick={()=>setStep(i)}>{done[i]?"✓ ":""}{s}</button>)}
+        </div>
+      </div>
+      <div className="main">
+        {step===0&&<SetupStep creds={creds} setCreds={setCreds} selAff={selAff} setSelAff={setSelAff} onNext={()=>goNext(0)}/>}
+        {step===1&&<ProductStep product={product} setProduct={setProduct} selAff={selAff} onNext={()=>goNext(1)}/>}
+        {step===2&&<GenerateStep product={product} selAff={selAff} content={content} setContent={setContent} onNext={()=>goNext(2)}/>}
+        {step===3&&<VideoStep product={product} content={content} videoUrl={videoUrl} setVideoBlob={setVideoBlob} setVideoUrl={setVideoUrl} onNext={()=>goNext(3)}/>}
+        {step===4&&<PublishStep content={content} videoBlob={videoBlob} videoUrl={videoUrl} creds={creds} product={product}/>}
+      </div>
+    </div>
+    {installModal&&<InstallModal platform={installModal} deferredPrompt={deferredPrompt} onClose={()=>setInstallModal(null)}/>}
+  </>);
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
+</script>
+
+<script>
+// ── PWA Service Worker ─────────────────────────────────────────
+const SW_CODE=`
+const CACHE='affiliateai-v1';
+const ASSETS=['/'];
+self.addEventListener('install',e=>{
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));
+});
+self.addEventListener('activate',e=>{
+  e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
+});
+self.addEventListener('fetch',e=>{
+  if(e.request.method!=='GET')return;
+  e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{
+    if(res.ok&&e.request.url.startsWith(self.location.origin)){
+      const clone=res.clone();caches.open(CACHE).then(c=>c.put(e.request,clone));
+    }return res;
+  }).catch(()=>caches.match('/'))));
+});
+`;
+
+if('serviceWorker' in navigator){
+  try{
+    const blob=new Blob([SW_CODE],{type:'application/javascript'});
+    const url=URL.createObjectURL(blob);
+    navigator.serviceWorker.register(url,{scope:'/'}).then(r=>{
+      console.log('SW registered',r.scope);
+    }).catch(e=>console.log('SW blob failed:',e));
+  }catch(e){console.log('SW not supported in this context');}
+}
+</script>
+</body>
+</html>

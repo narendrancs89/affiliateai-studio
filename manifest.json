@@ -1,0 +1,14 @@
+{
+  "name": "AffiliateAI Studio",
+  "short_name": "AffiliateAI",
+  "description": "AI-powered affiliate marketing content creator for Amazon, Flipkart, JioMart & more",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0a0c12",
+  "theme_color": "#0a0c12",
+  "orientation": "portrait-primary",
+  "categories": ["productivity","business","social"],
+  "icons": [
+    {"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+  ]
+}
